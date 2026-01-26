@@ -5,7 +5,8 @@ import {
     Wheat, Croissant, Square, Grip, // Energy (using Square for Tubers/Potatoes as block, Grip for Pseudocereals)
     Bean, Fish, Drumstick, Milk, Layers, // Structural
     Droplet, Nut, Cuboid, Pipette, // Fats (Cuboid for Animal Fats/Butter)
-    Cake, Ham, Cookie, Wine // Apex
+    Cake, Ham, Cookie, Wine, // Apex
+    Egg, Steak
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -24,7 +25,8 @@ const CATEGORIES = [
     // 3. Strutturale (Proteine) - Red/Blue
     { id: 'Legumi', label: 'Legumi', icon: Bean, color: '#ef4444' },
     { id: 'Pesce', label: 'Pesce', icon: Fish, color: '#ef4444' },
-    { id: 'CarneB', label: 'Carne B./Uova', icon: Drumstick, color: '#ef4444' },
+    { id: 'CarneB', label: 'Carne Bianche', icon: Drumstick, color: '#ef4444' },
+    { id: 'Uova', label: 'Uova', icon: Egg, color: '#ef4444' },
     { id: 'Latticini', label: 'Latticini', icon: Milk, color: '#3b82f6' },
     { id: 'VegProt', label: 'Alt. Vegetali', icon: Layers, color: '#ef4444' },
 
@@ -36,6 +38,7 @@ const CATEGORIES = [
 
     // 5. Occasionali (Apice) - Purple
     { id: 'Dolci', label: 'Dolci', icon: Cake, color: '#8b5cf6' },
+    { id: 'CarneR', label: 'Carni Rosse', icon: Steak, color: '#8b5cf6' },
     { id: 'Insaccati', label: 'Insaccati', icon: Ham, color: '#8b5cf6' },
     { id: 'Snack', label: 'Snack Salati', icon: Cookie, color: '#8b5cf6' },
     { id: 'Bevande', label: 'Bev. Zuccherate', icon: Wine, color: '#8b5cf6' },
