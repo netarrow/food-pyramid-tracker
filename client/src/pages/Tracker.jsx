@@ -6,7 +6,7 @@ import {
     Bean, Fish, Drumstick, Milk, Layers, // Structural
     Droplet, Nut, Cuboid, Pipette, // Fats (Cuboid for Animal Fats/Butter)
     Cake, Ham, Cookie, Wine, // Apex
-    Egg, Steak
+    Egg, Beef
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -22,6 +22,12 @@ const CATEGORIES = [
     { id: 'Tuberi', label: 'Patate/Tuberi', icon: Square, color: '#f59e0b' },
     { id: 'Pseudo', label: 'Pseudocereali', icon: Grip, color: '#f59e0b' },
 
+    // 4. Grassi (Lipidi) - Gold
+    { id: 'Oli', label: 'Oli Vegetali', icon: Droplet, color: '#eab308' },
+    { id: 'Noci', label: 'Frutta Guscio', icon: Nut, color: '#eab308' },
+    { id: 'GrassiA', label: 'Grassi Animali', icon: Cuboid, color: '#eab308' },
+    { id: 'Salse', label: 'Salse Grasse', icon: Pipette, color: '#eab308' },
+
     // 3. Strutturale (Proteine) - Red/Blue
     { id: 'Legumi', label: 'Legumi', icon: Bean, color: '#ef4444' },
     { id: 'Pesce', label: 'Pesce', icon: Fish, color: '#ef4444' },
@@ -29,16 +35,10 @@ const CATEGORIES = [
     { id: 'Uova', label: 'Uova', icon: Egg, color: '#ef4444' },
     { id: 'Latticini', label: 'Latticini', icon: Milk, color: '#3b82f6' },
     { id: 'VegProt', label: 'Alt. Vegetali', icon: Layers, color: '#ef4444' },
-
-    // 4. Grassi (Lipidi) - Gold
-    { id: 'Oli', label: 'Oli Vegetali', icon: Droplet, color: '#eab308' },
-    { id: 'Noci', label: 'Frutta Guscio', icon: Nut, color: '#eab308' },
-    { id: 'GrassiA', label: 'Grassi Animali', icon: Cuboid, color: '#eab308' },
-    { id: 'Salse', label: 'Salse Grasse', icon: Pipette, color: '#eab308' },
+    { id: 'CarneR', label: 'Carni Rosse', icon: Beef, color: '#ef4444' },
 
     // 5. Occasionali (Apice) - Purple
     { id: 'Dolci', label: 'Dolci', icon: Cake, color: '#8b5cf6' },
-    { id: 'CarneR', label: 'Carni Rosse', icon: Steak, color: '#8b5cf6' },
     { id: 'Insaccati', label: 'Insaccati', icon: Ham, color: '#8b5cf6' },
     { id: 'Snack', label: 'Snack Salati', icon: Cookie, color: '#8b5cf6' },
     { id: 'Bevande', label: 'Bev. Zuccherate', icon: Wine, color: '#8b5cf6' },
