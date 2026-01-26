@@ -11,38 +11,38 @@ import {
 } from 'lucide-react';
 
 const CATEGORIES = [
-    // 1. Base (Vegetali e Fibre)
+    // 1. Base (Vegetali, Frutta e Aromi) - Consumo quotidiano
     { id: 'Verdure', label: 'Verdure Foglia', icon: Salad, color: '#10b981' },
     { id: 'Frutta', label: 'Frutta Fresca', icon: Apple, color: '#10b981' },
     { id: 'Ortaggi', label: 'Ortaggi/Radici', icon: Carrot, color: '#10b981' },
     { id: 'Aromi', label: 'Erbe/Spezie', icon: Leaf, color: '#10b981' },
 
-    // 2. Energetico (Carboidrati)
-    { id: 'Cereali', label: 'Cereali', icon: Wheat, color: '#f59e0b' },
-    { id: 'Grano', label: 'Pane/Pasta', icon: Croissant, color: '#f59e0b' },
-    { id: 'Tuberi', label: 'Patate/Tuberi', icon: Square, color: '#f59e0b' },
+    // 2. Energetico (Carboidrati Complessi) - Consumo frequente
+    { id: 'CerealiInt', label: 'Cereali Integrali', icon: Wheat, color: '#f59e0b' },
     { id: 'Pseudo', label: 'Pseudocereali', icon: Grip, color: '#f59e0b' },
+    { id: 'Tuberi', label: 'Patate/Tuberi', icon: Square, color: '#f59e0b' },
 
-    // 4. Grassi (Lipidi)
-    { id: 'Oli', label: 'Oli Vegetali', icon: Droplet, color: '#eab308' },
+    // 3. Grassi Sani (Lipidi Vegetali) - Consumo quotidiano moderato
+    { id: 'Oli', label: 'Oli Vegetali (EVO)', icon: Droplet, color: '#eab308' },
     { id: 'Noci', label: 'Frutta Guscio', icon: Nut, color: '#eab308' },
-    { id: 'GrassiA', label: 'Grassi Animali', icon: Cuboid, color: '#eab308' },
-    { id: 'Salse', label: 'Salse Grasse', icon: Pipette, color: '#eab308' },
 
-    // 3. Strutturale (Proteine)
+    // 4. Strutturale (Proteine Nobili e Latticini) - Consumo settimanale
     { id: 'Legumi', label: 'Legumi', icon: Bean, color: '#ef4444' },
     { id: 'Pesce', label: 'Pesce', icon: Fish, color: '#ef4444' },
     { id: 'CarneB', label: 'Carne Bianche', icon: Drumstick, color: '#ef4444' },
     { id: 'Uova', label: 'Uova', icon: Egg, color: '#ef4444' },
     { id: 'Latticini', label: 'Latticini', icon: Milk, color: '#3b82f6' },
     { id: 'VegProt', label: 'Alt. Vegetali', icon: Layers, color: '#ef4444' },
-    { id: 'CarneR', label: 'Carni Rosse', icon: Beef, color: '#ef4444' },
 
-    // 5. Occasionali (Apice)
-    { id: 'Dolci', label: 'Dolci', icon: Cake, color: '#8b5cf6' },
+    // 5. Da Limitare (Occasionali, Grassi Saturi e Zuccheri)
+    { id: 'CarneR', label: 'Carni Rosse', icon: Beef, color: '#8b5cf6' }, // Spostata qui per frequenza ridotta
+    { id: 'GrassiA', label: 'Grassi Animali', icon: Cuboid, color: '#8b5cf6' }, // Spostato dai grassi quotidiani
+    { id: 'Salse', label: 'Salse Grasse', icon: Pipette, color: '#8b5cf6' }, // Spostato qui
     { id: 'Insaccati', label: 'Insaccati', icon: Ham, color: '#8b5cf6' },
+    { id: 'Dolci', label: 'Dolci', icon: Cake, color: '#8b5cf6' },
     { id: 'Snack', label: 'Snack Salati', icon: Cookie, color: '#8b5cf6' },
     { id: 'Bevande', label: 'Bev. Zuccherate', icon: Wine, color: '#8b5cf6' },
+    { id: 'CerealiRaf', label: 'Cereali Raffinati', icon: Cake, color: '#8b5cf6' },
 ];
 
 const MEAL_SLOTS = ['Breakfast', 'Snack 1', 'Lunch', 'Snack 2', 'Dinner'];
