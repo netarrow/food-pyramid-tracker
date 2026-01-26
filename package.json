@@ -3,6 +3,8 @@
     "version": "1.0.0",
     "description": "Food Pyramid Tracker",
     "scripts": {
+        "build": "cd client && npm install && npm run build",
+        "start": "cd server && npm install && node index.js",
         "start:server": "cd server && npm start",
         "start:client": "cd client && npm run dev",
         "install:all": "npm install && cd server && npm install && cd client && npm install"

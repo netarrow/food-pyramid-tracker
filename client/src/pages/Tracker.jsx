@@ -1,108 +1,212 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { DndContext, useDraggable, useDroppable, DragOverlay } from '@dnd-kit/core';
+import {
+    Salad, Apple, Carrot, Leaf, // Base
+    Wheat, Croissant, Square, Grip, // Energy (using Square for Tubers/Potatoes as block, Grip for Pseudocereals)
+    Bean, Fish, Drumstick, Milk, Layers, // Structural
+    Droplet, Nut, Cuboid, Pipette, // Fats (Cuboid for Animal Fats/Butter)
+    Cake, Ham, Cookie, Wine // Apex
+} from 'lucide-react';
+
+const CATEGORIES = [
+    // 1. Base (Vegetali e Fibre) - Green/Teal
+    { id: 'Verdure', label: 'Verdure Foglia', icon: Salad, color: '#10b981' },
+    { id: 'Frutta', label: 'Frutta Fresca', icon: Apple, color: '#10b981' },
+    { id: 'Ortaggi', label: 'Ortaggi/Radici', icon: Carrot, color: '#10b981' },
+    { id: 'Aromi', label: 'Erbe/Spezie', icon: Leaf, color: '#10b981' },
+
+    // 2. Energetico (Carboidrati) - Yellow/Orange
+    { id: 'Cereali', label: 'Cereali', icon: Wheat, color: '#f59e0b' },
+    { id: 'Grano', label: 'Pane/Pasta', icon: Croissant, color: '#f59e0b' },
+    { id: 'Tuberi', label: 'Patate/Tuberi', icon: Square, color: '#f59e0b' },
+    { id: 'Pseudo', label: 'Pseudocereali', icon: Grip, color: '#f59e0b' },
+
+    // 3. Strutturale (Proteine) - Red/Blue
+    { id: 'Legumi', label: 'Legumi', icon: Bean, color: '#ef4444' },
+    { id: 'Pesce', label: 'Pesce', icon: Fish, color: '#ef4444' },
+    { id: 'CarneB', label: 'Carne B./Uova', icon: Drumstick, color: '#ef4444' },
+    { id: 'Latticini', label: 'Latticini', icon: Milk, color: '#3b82f6' },
+    { id: 'VegProt', label: 'Alt. Vegetali', icon: Layers, color: '#ef4444' },
+
+    // 4. Grassi (Lipidi) - Gold
+    { id: 'Oli', label: 'Oli Vegetali', icon: Droplet, color: '#eab308' },
+    { id: 'Noci', label: 'Frutta Guscio', icon: Nut, color: '#eab308' },
+    { id: 'GrassiA', label: 'Grassi Animali', icon: Cuboid, color: '#eab308' },
+    { id: 'Salse', label: 'Salse Grasse', icon: Pipette, color: '#eab308' },
+
+    // 5. Occasionali (Apice) - Purple
+    { id: 'Dolci', label: 'Dolci', icon: Cake, color: '#8b5cf6' },
+    { id: 'Insaccati', label: 'Insaccati', icon: Ham, color: '#8b5cf6' },
+    { id: 'Snack', label: 'Snack Salati', icon: Cookie, color: '#8b5cf6' },
+    { id: 'Bevande', label: 'Bev. Zuccherate', icon: Wine, color: '#8b5cf6' },
+];
+
+const MEAL_SLOTS = ['Breakfast', 'Snack 1', 'Lunch', 'Snack 2', 'Dinner'];
+
+// --- Components ---
+
+function DraggableSource({ category }) {
+    const { attributes, listeners, setNodeRef } = useDraggable({
+        id: category.id,
+        data: { type: 'source', category }
+    });
+
+    return (
+        <div ref={setNodeRef} {...listeners} {...attributes} className="draggable-source" style={{ backgroundColor: category.color }}>
+            <category.icon size={24} color="#fff" />
+            <span className="source-label">{category.label}</span>
+        </div>
+    );
+}
+
+function MealSlot({ id, title, items, onRemove }) {
+    const { setNodeRef, isOver } = useDroppable({
+        id: id,
+        data: { type: 'meal', mealId: id }
+    });
+
+    return (
+        <div ref={setNodeRef} className={`meal-slot ${isOver ? 'highlight' : ''}`}>
+            <h3>{title}</h3>
+            <div className="meal-items">
+                {items.length === 0 && <span className="placeholder">Drop food here</span>}
+                {items.map((item, idx) => {
+                    const cat = CATEGORIES.find(c => c.id === item);
+                    const Icon = cat ? cat.icon : Droplet;
+                    const label = cat ? cat.label : item;
+                    return (
+                        <div key={idx} className="meal-item-chip" onClick={() => onRemove(id, idx)}>
+                            <Icon size={16} />
+                            <span>{label}</span>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
+function DragItemOverlay({ id }) {
+    const cat = CATEGORIES.find(c => c.id === id);
+    if (!cat) return null;
+    return (
+        <div className="draggable-source overlay" style={{ backgroundColor: cat.color }}>
+            <cat.icon size={24} color="#fff" />
+        </div>
+    );
+}
+
+// --- Main Tracker ---
 
 const Tracker = () => {
-    const [formData, setFormData] = useState({
-        date: new Date().toISOString().split('T')[0],
-        place: '',
-        foodType: ''
-    });
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [dayLogs, setDayLogs] = useState({});
+    const [activeDragId, setActiveDragId] = useState(null);
 
-    const foodTypes = [
-        'Carbohydrates',
-        'Proteins',
-        'Vegetables',
-        'Fruits',
-        'Dairy',
-        'Sweets',
-        'Fats'
-    ];
+    // Load from LocalStorage
+    useEffect(() => {
+        const stored = localStorage.getItem('foodTrackerLogs');
+        if (stored) {
+            setDayLogs(JSON.parse(stored));
+        }
+    }, []);
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Save to LocalStorage
+    const saveLogs = (newLogs) => {
+        setDayLogs(newLogs);
+        localStorage.setItem('foodTrackerLogs', JSON.stringify(newLogs));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setMessage('');
+    const handleDragStart = (event) => {
+        setActiveDragId(event.active.id);
+    };
 
-        try {
-            const res = await fetch('/api/logs', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+        setActiveDragId(null);
 
-            if (!res.ok) throw new Error('Failed to save');
+        if (over && MEAL_SLOTS.includes(over.id)) {
+            const categoryId = active.id;
+            const mealId = over.id;
 
-            setMessage('Log saved successfully!');
-            // Reset non-date fields
-            setFormData(prev => ({ ...prev, place: '', foodType: '' }));
+            // Get current day's data or init
+            const currentDayData = dayLogs[date] || {};
+            const currentMealData = currentDayData[mealId] || [];
 
-            // Clear message after 3s
-            setTimeout(() => setMessage(''), 3000);
-        } catch (err) {
-            setMessage('Error saving log.');
-        } finally {
-            setLoading(false);
+            const newDayData = {
+                ...currentDayData,
+                [mealId]: [...currentMealData, categoryId]
+            };
+
+            const newLogs = {
+                ...dayLogs,
+                [date]: newDayData
+            };
+
+            saveLogs(newLogs);
         }
     };
 
-    return (
-        <div className="page-content">
-            <div className="header">
-                <h1>Track Food</h1>
-                <p style={{ color: 'var(--text-secondary)' }}>Log what you ate today.</p>
-            </div>
+    const removeItem = (mealId, index) => {
+        const currentDayData = dayLogs[date] || {};
+        const currentMealData = currentDayData[mealId] || [];
 
-            <form onSubmit={handleSubmit} className="card">
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Date</label>
+        const newMealData = [...currentMealData];
+        newMealData.splice(index, 1);
+
+        const newLogs = {
+            ...dayLogs,
+            [date]: {
+                ...currentDayData,
+                [mealId]: newMealData
+            }
+        };
+        saveLogs(newLogs);
+    };
+
+    const currentDayData = dayLogs[date] || {};
+
+    return (
+        <div className="page-content tracker-layout">
+            <div className="date-picker-section">
                 <input
                     type="date"
-                    name="date"
-                    value={formData.date}
-                    onChange={handleChange}
-                    required
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="date-input"
                 />
+            </div>
 
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Place</label>
-                <input
-                    type="text"
-                    name="place"
-                    placeholder="e.g. Home, Ristorante Roma"
-                    value={formData.place}
-                    onChange={handleChange}
-                    required
-                />
+            <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                <div className="tracker-columns">
+                    {/* Source Column (Icons) */}
+                    <div className="source-column card">
+                        <h2>Foods</h2>
+                        <div className="sources-grid">
+                            {CATEGORIES.map(cat => (
+                                <DraggableSource key={cat.id} category={cat} />
+                            ))}
+                        </div>
+                    </div>
 
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Food Type</label>
-                <select
-                    name="foodType"
-                    value={formData.foodType}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="" disabled>Select food type</option>
-                    {foodTypes.map(type => (
-                        <option key={type} value={type}>{type}</option>
-                    ))}
-                </select>
+                    {/* Target Column (Meals) */}
+                    <div className="target-column">
+                        {MEAL_SLOTS.map(meal => (
+                            <MealSlot
+                                key={meal}
+                                id={meal}
+                                title={meal}
+                                items={currentDayData[meal] || []}
+                                onRemove={removeItem}
+                            />
+                        ))}
+                    </div>
+                </div>
 
-                <button type="submit" className="btn-primary" disabled={loading}>
-                    {loading ? 'Saving...' : 'Save Log'}
-                </button>
-
-                {message && (
-                    <p style={{
-                        textAlign: 'center',
-                        color: message.includes('Error') ? 'var(--error-color)' : 'var(--secondary-color)'
-                    }}>
-                        {message}
-                    </p>
-                )}
-            </form>
+                <DragOverlay>
+                    {activeDragId ? <DragItemOverlay id={activeDragId} /> : null}
+                </DragOverlay>
+            </DndContext>
         </div>
     );
 };
