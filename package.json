@@ -4,8 +4,8 @@
     "description": "Food Pyramid Tracker",
     "scripts": {
         "build": "cd client && npm install && npm run build",
-        "start": "cd server && npm install && node index.js",
-        "dev": "concurrently \"npm run start:server\" \"npm run start:client\"",
+        "start": "NODE_ENV=production cd server && npm install && node index.js",
+        "dev": "NODE_ENV=development cd server && npm install && node index.js",
         "start:server": "cd server && npm start",
         "start:client": "cd client && npm run dev",
         "install:all": "npm install && cd server && npm install && cd client && npm install"

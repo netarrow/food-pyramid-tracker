@@ -19,37 +19,65 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 // In-memory stick data store
 let logs = [];
 
-// Get all logs
-app.get('/api/logs', (req, res) => {
-  res.json(logs);
-});
+// --- Environment Setup ---
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Create a new log
-app.post('/api/logs', (req, res) => {
-  const { date, place, foodType } = req.body;
-  if (!date || !place || !foodType) {
-    return res.status(400).json({ error: 'Missing required fields' });
+async function startServer() {
+  // API Routes (Always active)
+  app.get('/api/logs', (req, res) => {
+    res.json(logs);
+  });
+
+  app.post('/api/logs', (req, res) => {
+    const { date, place, foodType } = req.body;
+    if (!date || !place || !foodType) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    const newLog = {
+      id: Date.now(),
+      date,
+      place,
+      foodType,
+      createdAt: new Date()
+    };
+    
+    logs.push(newLog);
+    console.log('New Log Added:', newLog);
+    res.status(201).json(newLog);
+  });
+
+
+  if (isProduction) {
+    // --- PRODUCTION: Serve Static Files ---
+    console.log('Running in PRODUCTION mode');
+    const distPath = path.join(__dirname, '../client/dist');
+    app.use(express.static(distPath));
+
+    // Catch-all for SPA
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
+  } else {
+    // --- DEVELOPMENT: Use Vite Middleware ---
+    console.log('Running in DEVELOPMENT mode');
+    const { createServer: createViteServer } = await import('vite');
+    
+    // Create Vite server in middleware mode and configure the app type as 'spa'
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: 'spa', 
+      root: path.join(__dirname, '../client')
+    });
+
+    // Use vite's connect instance as middleware
+    // If you use your own express router (express.Router()), you should use router.use
+    app.use(vite.middlewares);
   }
-  
-  const newLog = {
-    id: Date.now(),
-    date,
-    place,
-    foodType,
-    createdAt: new Date()
-  };
-  
-  logs.push(newLog);
-  console.log('New Log Added:', newLog);
-  res.status(201).json(newLog);
-});
 
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get(/(.*)/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+startServer();
