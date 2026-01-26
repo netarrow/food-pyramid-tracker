@@ -39,6 +39,14 @@ body {
   flex-direction: column;
   position: relative;
   background-color: var(--bg-color); /* Ensure bg is consistent */
+  margin: 0 auto;
+}
+
+@media (min-width: 769px) {
+  #root {
+    max-width: 1200px; /* Expanded width for desktop */
+    padding: 0 40px;
+  }
 }
 
 a {
@@ -114,6 +122,13 @@ input:focus, select:focus {
   padding: 16px 0;
   z-index: 100;
   padding-bottom: max(16px, env(safe-area-inset-bottom)); /* iOS safe area */
+}
+
+@media (min-width: 769px) {
+  .nav-bar {
+    max-width: 1200px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
 }
 
 .nav-item {
@@ -198,18 +213,17 @@ input:focus, select:focus {
 
 /* Source Column */
 .source-column {
-  flex: 0 0 auto; /* Don't grow too much */
+  flex: 1; /* Allow to grow on mobile to fill screen */
   display: flex;
   flex-direction: column;
   padding: 16px;
-  max-height: 200px; /* Limit height on mobile */
+  max-height: none; /* Removed limit since it's a dedicated view now */
   overflow-y: auto;
 }
 
 @media (min-width: 768px) {
   .source-column {
     flex: 0 0 300px; /* Fixed width on desktop */
-    max-height: none;
   }
 }
 
@@ -272,7 +286,7 @@ input:focus, select:focus {
   border: 1px dashed var(--glass-border);
   border-radius: 12px;
   padding: 12px;
-  min-height: 80px;
+  min-height: 110px; /* Reduced slightly for better fit */
   transition: background-color 0.2s, border-color 0.2s;
 }
 
@@ -319,4 +333,173 @@ input:focus, select:focus {
 .meal-item-chip:hover {
   background: #333;
   border-color: var(--error-color); /* Hint at removal */
+}
+
+/* --- Portion Modal --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--surface-color);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.portion-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.portion-item {
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.portion-item:hover {
+  background: var(--primary-color);
+  color: #000;
+  transform: translateY(-2px);
+}
+
+.portion-item span {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.btn-cancel {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* --- Chip Updates for Portion --- */
+.meal-item-chip {
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chip-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip-portion {
+  padding-left: 8px;
+  border-left: 1px solid rgba(255,255,255,0.2);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+}
+
+/* --- Mobile View & Responsive --- */
+.mobile-view-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 8px;
+  display: none; /* Hidden by default (desktop) */
+}
+
+.swipe-hint {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  margin-bottom: 16px;
+  opacity: 0.7;
+  display: none; 
+}
+
+.tab {
+  padding: 8px 16px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .mobile-view-tabs, .swipe-hint {
+    display: flex; /* Show tabs/hint on mobile */
+  }
+  
+  .swipe-hint {
+    display: block;
+  }
+
+  .tracker-columns {
+    flex-direction: column; 
+    /* We handle visibility via logical columns, but flex direction matters less if one is hidden. */
+  }
+
+  .mobile-hidden {
+    display: none;
+  }
+}
+
+/* Desktop Styles */
+@media (min-width: 769px) {
+  /* Larger drop zones for desktop */
+  .meal-slot {
+    min-height: 180px; /* Increase height */
+    padding: 24px;
+  }
+  
+  .meal-items {
+    min-height: 120px; /* Bigger target area */
+  }
+
+  .sources-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Larger grid items */
+  }
 }
