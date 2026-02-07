@@ -1,49 +1,89 @@
 import { useState, useEffect } from 'react';
 import { DndContext, useDraggable, useDroppable, DragOverlay } from '@dnd-kit/core';
 import {
-    Salad, Apple, Carrot, Leaf, // Base
-    Wheat, Croissant, Square, Grip, // Energy
-    Bean, Fish, Drumstick, Milk, Layers, // Structural
-    Droplet, Nut, Cuboid, Pipette, // Fats
-    Cake, Ham, Cookie, Wine, // Apex
+    Salad, Apple, Leaf,
+    Wheat, Square,
+    Bean, Fish, Drumstick, Milk,
+    Droplet, Nut,
+    Cake, Ham,
     Egg, Beef,
     CircleSmall, Utensils, Coffee, IceCreamBowl, Disc // Portions
 } from 'lucide-react';
 
-const CATEGORIES = [
-    // 1. Base (Vegetali, Frutta e Aromi) - Consumo quotidiano
-    { id: 'Verdure', label: 'Verdure Foglia', icon: Salad, color: '#10b981' },
-    { id: 'Frutta', label: 'Frutta Fresca', icon: Apple, color: '#10b981' },
-    { id: 'Ortaggi', label: 'Ortaggi/Radici', icon: Carrot, color: '#10b981' },
-    { id: 'Aromi', label: 'Erbe/Spezie', icon: Leaf, color: '#10b981' },
+const ICONS = {
+    Salad,
+    Apple,
+    Wheat,
+    Square,
+    Droplet,
+    Milk,
+    Nut,
+    Leaf,
+    Bean,
+    Drumstick,
+    Fish,
+    Egg,
+    Beef,
+    Ham,
+    Cake
+};
 
-    // 2. Energetico (Carboidrati Complessi) - Consumo frequente
-    { id: 'CerealiInt', label: 'Cereali Integrali', icon: Wheat, color: '#f59e0b' },
-    { id: 'Pseudo', label: 'Pseudocereali', icon: Grip, color: '#f59e0b' },
-    { id: 'Tuberi', label: 'Patate/Tuberi', icon: Square, color: '#f59e0b' },
-
-    // 3. Grassi Sani (Lipidi Vegetali) - Consumo quotidiano moderato
-    { id: 'Oli', label: 'Oli Vegetali (EVO)', icon: Droplet, color: '#eab308' },
-    { id: 'Noci', label: 'Frutta Guscio', icon: Nut, color: '#eab308' },
-
-    // 4. Strutturale (Proteine Nobili e Latticini) - Consumo settimanale
-    { id: 'Legumi', label: 'Legumi', icon: Bean, color: '#ef4444' },
-    { id: 'Pesce', label: 'Pesce', icon: Fish, color: '#ef4444' },
-    { id: 'CarneB', label: 'Carne Bianche', icon: Drumstick, color: '#ef4444' },
-    { id: 'Uova', label: 'Uova', icon: Egg, color: '#ef4444' },
-    { id: 'Latticini', label: 'Latticini', icon: Milk, color: '#3b82f6' },
-    { id: 'VegProt', label: 'Alt. Vegetali', icon: Layers, color: '#ef4444' },
-
-    // 5. Da Limitare (Occasionali, Grassi Saturi e Zuccheri)
-    { id: 'CarneR', label: 'Carni Rosse', icon: Beef, color: '#8b5cf6' }, // Spostata qui per frequenza ridotta
-    { id: 'GrassiA', label: 'Grassi Animali', icon: Cuboid, color: '#8b5cf6' }, // Spostato dai grassi quotidiani
-    { id: 'Salse', label: 'Salse Grasse', icon: Pipette, color: '#8b5cf6' }, // Spostato qui
-    { id: 'Insaccati', label: 'Insaccati', icon: Ham, color: '#8b5cf6' },
-    { id: 'Dolci', label: 'Dolci', icon: Cake, color: '#8b5cf6' },
-    { id: 'Snack', label: 'Snack Salati', icon: Cookie, color: '#8b5cf6' },
-    { id: 'Bevande', label: 'Bev. Zuccherate', icon: Wine, color: '#8b5cf6' },
-    { id: 'CerealiRaf', label: 'Cereali Raffinati', icon: Cake, color: '#8b5cf6' },
+// Data rigenerati dalla piramide alimentare allegata (frequenze e porzioni)
+const FOOD_PYRAMID = [
+    {
+        level: 'every_main_meal',
+        foods: [
+            { id: 'Verdure', label: 'Verdure', servings: '>=2p/die', icon: 'Salad', color: '#10b981' },
+            { id: 'Frutta', label: 'Frutta', servings: '1-2p/die', icon: 'Apple', color: '#10b981' },
+            { id: 'CerealiPatate', label: 'Pane/Pasta/Riso/Cereali/Patate', servings: '1-2p/pasto', icon: 'Wheat', color: '#f59e0b' },
+            { id: 'OlioOliva', label: 'Olio d oliva', servings: 'uso quotidiano', icon: 'Droplet', color: '#f59e0b' }
+        ]
+    },
+    {
+        level: 'every_day',
+        foods: [
+            { id: 'Latticini', label: 'Latticini (preferibilmente magri)', servings: '2p/die', icon: 'Milk', color: '#3b82f6' },
+            { id: 'OliveNociSemi', label: 'Olive/Noci/Semi', servings: '1-2p/die', icon: 'Nut', color: '#eab308' },
+            { id: 'ErbeSpezie', label: 'Erbe/Spezie/Aglio/Cipolla', servings: 'quotidiano', icon: 'Leaf', color: '#84cc16' },
+            { id: 'Legumi', label: 'Legumi', servings: 'quotidiano', icon: 'Bean', color: '#84cc16' }
+        ]
+    },
+    {
+        level: 'weekly',
+        foods: [
+            { id: 'CarneBianca', label: 'Carne bianca', servings: '2p/settimana', icon: 'Drumstick', color: '#ef4444' },
+            { id: 'PesceFruttiMare', label: 'Pesce/Frutti di mare', servings: '>=2p/settimana', icon: 'Fish', color: '#ef4444' },
+            { id: 'Uova', label: 'Uova', servings: '2-4p/settimana', icon: 'Egg', color: '#ef4444' },
+            { id: 'CarneRossa', label: 'Carne rossa', servings: '<2p/settimana', icon: 'Beef', color: '#f97316' },
+            { id: 'CarneProcessata', label: 'Carne processata', servings: '<=1p/settimana', icon: 'Ham', color: '#f97316' },
+            { id: 'Dolci', label: 'Dolci', servings: '<=2p/settimana', icon: 'Cake', color: '#8b5cf6' }
+        ]
+    }
 ];
+
+const CATEGORIES = FOOD_PYRAMID.flatMap((band) =>
+    band.foods.map((food) => ({
+        id: food.id,
+        label: food.label,
+        icon: ICONS[food.icon] || Salad,
+        color: food.color,
+        level: band.level,
+        servings: food.servings
+    }))
+);
+
+const PYRAMID_LEVELS = ['weekly', 'every_day', 'every_main_meal'];
+
+const PYRAMID_LEVEL_META = {
+    weekly: { title: 'Weekly', subtitle: 'Occasional foods' },
+    every_day: { title: 'Every Day', subtitle: 'Daily balance' },
+    every_main_meal: { title: 'Every Main Meal', subtitle: 'Foundation foods' }
+};
+
+const CATEGORIES_BY_LEVEL = PYRAMID_LEVELS.reduce((acc, level) => {
+    acc[level] = CATEGORIES.filter((category) => category.level === level);
+    return acc;
+}, {});
 
 const MEAL_SLOTS = ['Breakfast', 'Snack 1', 'Lunch', 'Snack 2', 'Dinner'];
 
@@ -67,6 +107,7 @@ function DraggableSource({ category }) {
         <div ref={setNodeRef} {...listeners} {...attributes} className="draggable-source" style={{ backgroundColor: category.color }}>
             <category.icon size={24} color="#fff" />
             <span className="source-label">{category.label}</span>
+            <span className="source-servings">{category.servings}</span>
         </div>
     );
 }
@@ -315,10 +356,21 @@ const Tracker = () => {
                     <div
                         className={`source-column card ${viewMode === 'meals' ? 'mobile-hidden' : ''}`}
                     >
-                        <h2>Foods</h2>
-                        <div className="sources-grid">
-                            {CATEGORIES.map(cat => (
-                                <DraggableSource key={cat.id} category={cat} />
+                        <h2>Food Pyramid</h2>
+                        <p className="pyramid-intro">Drag a food from the pyramid and drop it into a meal.</p>
+                        <div className="pyramid-stack">
+                            {PYRAMID_LEVELS.map((level) => (
+                                <div key={level} className={`pyramid-tier level-${level}`}>
+                                    <div className="tier-header">
+                                        <span className="tier-title">{PYRAMID_LEVEL_META[level].title}</span>
+                                        <span className="tier-subtitle">{PYRAMID_LEVEL_META[level].subtitle}</span>
+                                    </div>
+                                    <div className="tier-food-grid">
+                                        {CATEGORIES_BY_LEVEL[level].map((cat) => (
+                                            <DraggableSource key={cat.id} category={cat} />
+                                        ))}
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>

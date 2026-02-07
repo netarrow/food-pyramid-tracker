@@ -213,43 +213,101 @@ input:focus, select:focus {
 
 /* Source Column */
 .source-column {
-  flex: 1; /* Allow to grow on mobile to fill screen */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  max-height: none; /* Removed limit since it's a dedicated view now */
+  gap: 10px;
+  padding: 14px;
   overflow-y: auto;
 }
 
-@media (min-width: 768px) {
-  .source-column {
-    flex: 0 0 300px; /* Fixed width on desktop */
-  }
+.source-column h2 {
+  font-size: 1.05rem;
+  letter-spacing: 0.4px;
 }
 
-.sources-grid {
+.pyramid-intro {
+  margin: 0;
+  text-align: left;
+  color: var(--text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.pyramid-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.pyramid-tier {
+  width: 100%;
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+  border-radius: 14px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.pyramid-tier.level-weekly {
+  width: 62%;
+}
+
+.pyramid-tier.level-every_day {
+  width: 80%;
+}
+
+.pyramid-tier.level-every_main_meal {
+  width: 100%;
+}
+
+.tier-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.tier-title {
+  font-size: 0.74rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 700;
+}
+
+.tier-subtitle {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.tier-food-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-  gap: 12px;
-  margin-top: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .draggable-source {
-  width: 70px;
-  height: 70px;
+  width: 100%;
+  min-height: 76px;
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 4px;
+  padding: 8px 6px;
   cursor: grab;
   color: #fff;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  transition: transform 0.2s;
+  transition: transform 0.2s, filter 0.2s;
   user-select: none;
-  touch-action: none; 
+  touch-action: none;
+  box-sizing: border-box;
 }
 
 .draggable-source:active {
@@ -258,16 +316,32 @@ input:focus, select:focus {
 }
 
 .draggable-source.overlay {
+  width: 86px;
+  min-height: 86px;
+  padding: 0;
   cursor: grabbing;
   transform: scale(1.1);
   box-shadow: 0 10px 20px rgba(0,0,0,0.5);
   z-index: 1000;
 }
 
+.draggable-source.overlay .source-label,
+.draggable-source.overlay .source-servings {
+  display: none;
+}
+
 .source-label {
-  margin-top: 4px;
+  text-align: center;
+  line-height: 1.15;
+  font-size: 0.68rem;
+}
+
+.source-servings {
   text-align: center;
   line-height: 1.1;
+  font-size: 0.62rem;
+  font-weight: 500;
+  opacity: 0.9;
 }
 
 
@@ -489,6 +563,36 @@ input:focus, select:focus {
 
 /* Desktop Styles */
 @media (min-width: 769px) {
+  .source-column {
+    flex: 0 0 min(560px, 48%);
+  }
+
+  .pyramid-tier.level-weekly {
+    width: 54%;
+  }
+
+  .pyramid-tier.level-every_day {
+    width: 74%;
+  }
+
+  .pyramid-tier.level-every_main_meal {
+    width: 96%;
+  }
+
+  .tier-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .tier-food-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .draggable-source {
+    min-height: 84px;
+  }
+
   /* Larger drop zones for desktop */
   .meal-slot {
     min-height: 180px; /* Increase height */
@@ -497,9 +601,5 @@ input:focus, select:focus {
   
   .meal-items {
     min-height: 120px; /* Bigger target area */
-  }
-
-  .sources-grid {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Larger grid items */
   }
 }
