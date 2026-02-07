@@ -35,7 +35,7 @@ const FOOD_PYRAMID = [
         foods: [
             { id: 'Verdure', label: 'Verdure', servings: '>=2p/die', icon: 'Salad', color: '#10b981' },
             { id: 'Frutta', label: 'Frutta', servings: '1-2p/die', icon: 'Apple', color: '#10b981' },
-            { id: 'CerealiPatate', label: 'Pane/Pasta/Riso/Cereali integrali/Patate', servings: '1-2p/pasto', icon: 'Wheat', color: '#f59e0b' },
+            { id: 'CerealiPatate', label: 'Cereali (integrali)', servings: '1-2p/pasto', icon: 'Wheat', color: '#f59e0b' },
             { id: 'OlioOliva', label: 'Olio d oliva', servings: 'uso quotidiano', icon: 'Droplet', color: '#f59e0b' }
         ]
     },
