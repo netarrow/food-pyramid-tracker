@@ -35,7 +35,7 @@ const FOOD_PYRAMID = [
         foods: [
             { id: 'Verdure', label: 'Verdure', servings: '>=2p/die', icon: 'Salad', color: '#10b981' },
             { id: 'Frutta', label: 'Frutta', servings: '1-2p/die', icon: 'Apple', color: '#10b981' },
-            { id: 'CerealiPatate', label: 'Pane/Pasta/Riso/Cereali/Patate', servings: '1-2p/pasto', icon: 'Wheat', color: '#f59e0b' },
+            { id: 'CerealiPatate', label: 'Pane/Pasta/Riso/Cereali integrali/Patate', servings: '1-2p/pasto', icon: 'Wheat', color: '#f59e0b' },
             { id: 'OlioOliva', label: 'Olio d oliva', servings: 'uso quotidiano', icon: 'Droplet', color: '#f59e0b' }
         ]
     },
@@ -49,14 +49,20 @@ const FOOD_PYRAMID = [
         ]
     },
     {
+        level: 'occasional',
+        foods: [
+            { id: 'CarneProcessata', label: 'Carne processata', servings: '<=1p/settimana (occasionale)', icon: 'Ham', color: '#f97316' },
+            { id: 'Dolci', label: 'Dolci', servings: '<=2p/settimana (occasionale)', icon: 'Cake', color: '#8b5cf6' },
+            { id: 'CerealiRaffinati', label: 'Cereali raffinati', servings: 'occasionale', icon: 'Wheat', color: '#8b5cf6' }
+        ]
+    },
+    {
         level: 'weekly',
         foods: [
             { id: 'CarneBianca', label: 'Carne bianca', servings: '2p/settimana', icon: 'Drumstick', color: '#ef4444' },
             { id: 'PesceFruttiMare', label: 'Pesce/Frutti di mare', servings: '>=2p/settimana', icon: 'Fish', color: '#ef4444' },
             { id: 'Uova', label: 'Uova', servings: '2-4p/settimana', icon: 'Egg', color: '#ef4444' },
-            { id: 'CarneRossa', label: 'Carne rossa', servings: '<2p/settimana', icon: 'Beef', color: '#f97316' },
-            { id: 'CarneProcessata', label: 'Carne processata', servings: '<=1p/settimana', icon: 'Ham', color: '#f97316' },
-            { id: 'Dolci', label: 'Dolci', servings: '<=2p/settimana', icon: 'Cake', color: '#8b5cf6' }
+            { id: 'CarneRossa', label: 'Carne rossa', servings: '<2p/settimana', icon: 'Beef', color: '#f97316' }
         ]
     }
 ];
@@ -72,10 +78,11 @@ const CATEGORIES = FOOD_PYRAMID.flatMap((band) =>
     }))
 );
 
-const PYRAMID_LEVELS = ['weekly', 'every_day', 'every_main_meal'];
+const PYRAMID_LEVELS = ['occasional', 'weekly', 'every_day', 'every_main_meal'];
 
 const PYRAMID_LEVEL_META = {
-    weekly: { title: 'Weekly', subtitle: 'Occasional foods' },
+    occasional: { title: 'Occasional', subtitle: 'Rare foods' },
+    weekly: { title: 'Weekly', subtitle: 'Moderate frequency' },
     every_day: { title: 'Every Day', subtitle: 'Daily balance' },
     every_main_meal: { title: 'Every Main Meal', subtitle: 'Foundation foods' }
 };
@@ -107,7 +114,6 @@ function DraggableSource({ category }) {
         <div ref={setNodeRef} {...listeners} {...attributes} className="draggable-source" style={{ backgroundColor: category.color }}>
             <category.icon size={24} color="#fff" />
             <span className="source-label">{category.label}</span>
-            <span className="source-servings">{category.servings}</span>
         </div>
     );
 }
