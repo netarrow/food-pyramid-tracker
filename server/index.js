@@ -6,15 +6,14 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const clientRoot = path.join(__dirname, '..');
+const distPath = path.join(clientRoot, 'dist');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
-
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // In-memory stick data store
 let logs = [];
@@ -51,11 +50,10 @@ async function startServer() {
   if (isProduction) {
     // --- PRODUCTION: Serve Static Files ---
     console.log('Running in PRODUCTION mode');
-    const distPath = path.join(__dirname, '../client/dist');
     app.use(express.static(distPath));
 
-    // Catch-all for SPA
-    app.get('*', (req, res) => {
+    // Catch-all for SPA (Express 5 requires named wildcard)
+    app.get('/{*splat}', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   } else {
@@ -67,7 +65,7 @@ async function startServer() {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa', 
-      root: path.join(__dirname, '../client')
+      root: clientRoot
     });
 
     // Use vite's connect instance as middleware
