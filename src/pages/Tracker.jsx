@@ -28,41 +28,41 @@ const ICONS = {
     Cake
 };
 
-// Data rigenerati dalla piramide alimentare allegata (frequenze e porzioni)
+// Data regenerated from the attached food pyramid (frequencies and portions)
 const FOOD_PYRAMID = [
     {
         level: 'every_main_meal',
         foods: [
-            { id: 'Verdure', label: 'Verdure', servings: '>=2p/die', icon: 'Salad', color: '#10b981' },
-            { id: 'Frutta', label: 'Frutta', servings: '1-2p/die', icon: 'Apple', color: '#10b981' },
-            { id: 'CerealiPatate', label: 'Cereali (integrali) o Patate', servings: '1-2p/pasto', icon: 'Wheat', color: '#f59e0b' },
-            { id: 'OlioOliva', label: 'Olio d oliva', servings: 'uso quotidiano', icon: 'Droplet', color: '#f59e0b' }
+            { id: 'Verdure', label: 'Vegetables', servings: '>=2 servings/day', icon: 'Salad', color: '#10b981' },
+            { id: 'Frutta', label: 'Fruit', servings: '1-2 servings/day', icon: 'Apple', color: '#10b981' },
+            { id: 'CerealiPatate', label: 'Whole grains or potatoes', servings: '1-2 servings/meal', icon: 'Wheat', color: '#f59e0b' },
+            { id: 'OlioOliva', label: 'Olive oil', servings: 'daily use', icon: 'Droplet', color: '#f59e0b' }
         ]
     },
     {
         level: 'every_day',
         foods: [
-            { id: 'Latticini', label: 'Latticini (preferibilmente magri)', servings: '2p/die', icon: 'Milk', color: '#3b82f6' },
-            { id: 'OliveNociSemi', label: 'Oli vegetali/Noci/Semi', servings: '1-2p/die', icon: 'Nut', color: '#eab308' },
-            { id: 'ErbeSpezie', label: 'Erbe/Spezie/Aglio/Cipolla', servings: 'quotidiano', icon: 'Leaf', color: '#84cc16' },
-            { id: 'Legumi', label: 'Legumi', servings: 'quotidiano', icon: 'Bean', color: '#84cc16' }
+            { id: 'Latticini', label: 'Dairy (preferably low-fat)', servings: '2 servings/day', icon: 'Milk', color: '#3b82f6' },
+            { id: 'OliveNociSemi', label: 'Vegetable oils/Nuts/Seeds', servings: '1-2 servings/day', icon: 'Nut', color: '#eab308' },
+            { id: 'ErbeSpezie', label: 'Herbs/Spices/Garlic/Onion', servings: 'daily', icon: 'Leaf', color: '#84cc16' },
+            { id: 'Legumi', label: 'Legumes', servings: 'daily', icon: 'Bean', color: '#84cc16' }
         ]
     },
     {
         level: 'occasional',
         foods: [
-            { id: 'CarneProcessata', label: 'Carne processata', servings: '<=1p/settimana (occasionale)', icon: 'Ham', color: '#f97316' },
-            { id: 'Dolci', label: 'Dolci', servings: '<=2p/settimana (occasionale)', icon: 'Cake', color: '#8b5cf6' },
-            { id: 'CerealiRaffinati', label: 'Cereali raffinati', servings: 'occasionale', icon: 'Wheat', color: '#8b5cf6' }
+            { id: 'CarneProcessata', label: 'Processed meat', servings: '<=1 serving/week (occasional)', icon: 'Ham', color: '#f97316' },
+            { id: 'Dolci', label: 'Sweets', servings: '<=2 servings/week (occasional)', icon: 'Cake', color: '#8b5cf6' },
+            { id: 'CerealiRaffinati', label: 'Refined grains', servings: 'occasional', icon: 'Wheat', color: '#8b5cf6' }
         ]
     },
     {
         level: 'weekly',
         foods: [
-            { id: 'CarneBianca', label: 'Carne bianca', servings: '2p/settimana', icon: 'Drumstick', color: '#ef4444' },
-            { id: 'PesceFruttiMare', label: 'Pesce/Frutti di mare', servings: '>=2p/settimana', icon: 'Fish', color: '#ef4444' },
-            { id: 'Uova', label: 'Uova', servings: '2-4p/settimana', icon: 'Egg', color: '#ef4444' },
-            { id: 'CarneRossa', label: 'Carne rossa', servings: '<2p/settimana', icon: 'Beef', color: '#f97316' }
+            { id: 'CarneBianca', label: 'White meat', servings: '2 servings/week', icon: 'Drumstick', color: '#ef4444' },
+            { id: 'PesceFruttiMare', label: 'Fish/Seafood', servings: '>=2 servings/week', icon: 'Fish', color: '#ef4444' },
+            { id: 'Uova', label: 'Eggs', servings: '2-4 servings/week', icon: 'Egg', color: '#ef4444' },
+            { id: 'CarneRossa', label: 'Red meat', servings: '<2 servings/week', icon: 'Beef', color: '#f97316' }
         ]
     }
 ];
