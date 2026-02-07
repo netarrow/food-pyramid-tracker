@@ -1,16 +1,69 @@
-# React + Vite
+# Food Pyramid Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, interactive web application designed to help users track their daily food intake based on the nutritional principles of the Food Pyramid. Built with React and Vite, this tool offers a simple and engaging way to visualize and log meals.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Interactive Food Pyramid**: Foods are categorized into tiers:
+  - **Every Main Meal**: Vegetables, Fruits, Whole Grains (Foundation)
+  - **Every Day**: Dairy, Nuts/Seeds, Herbs/Spices, Legumes
+  - **Weekly**: White Meat, Fish/Seafood, Eggs, Red Meat
+  - **Occasional**: Processed Meats, Sweets, Refined Grains
+- **Drag & Drop Interface**: Easily log meals by dragging food items from the pyramid directly into meal slots (Breakfast, Snacks, Lunch, Dinner).
+- **Portion Control**: Select specific portion sizes for accurate tracking:
+  - Teaspoon (Cucchiaino)
+  - Spoon (Cucchiaio)
+  - Cup (Tazzina)
+  - Bowl (Ciotola)
+  - Plate (Piatto)
+- **Daily Persistence**: Your logs are saved locally, allowing you to track your intake day by day.
+- **Responsive Design**: Designed to work seamlessly on both desktop and mobile devices, featuring swipe gestures to switch views on smaller screens.
+- **Statistics Overview**: View a summary of your food intake history (currently under development/linked to API).
 
-## React Compiler
+## Screenshots
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Dashboard & Food Pyramid
+Navigate the full food pyramid and drag items to your daily meal plan.
+![Dashboard](docs/screenshots/dashboard.png)
 
-## Expanding the ESLint configuration
+### Drag & Drop Interaction
+Intuitively drag food items to log them.
+![Drag and Drop](docs/screenshots/drag_and_drop.png)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Logged Meals
+View your daily intake at a glance with portion indicators.
+![Logged Meals](docs/screenshots/dashboard_with_data.png)
+
+### Statistics
+Track your consumption trends over time.
+![Statistics](docs/screenshots/stats.png)
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:3001` (or the port shown in your terminal).
+
+## Tech Stack
+- **Frontend**: React, Vite
+- **Styling**: Vanilla CSS
+- **Icons**: Lucide React
+- **Drag and Drop**: @dnd-kit/core
