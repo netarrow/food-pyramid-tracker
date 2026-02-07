@@ -95,11 +95,11 @@ const CATEGORIES_BY_LEVEL = PYRAMID_LEVELS.reduce((acc, level) => {
 const MEAL_SLOTS = ['Breakfast', 'Snack 1', 'Lunch', 'Snack 2', 'Dinner'];
 
 const PORTIONS = [
-    { id: 'teaspoon', label: 'Cucchiaino', icon: CircleSmall },
-    { id: 'spoon', label: 'Cucchiaio', icon: Utensils },
-    { id: 'cup', label: 'Tazzina', icon: Coffee },
-    { id: 'bowl', label: 'Ciotola', icon: IceCreamBowl },
-    { id: 'plate', label: 'Piatto', icon: Disc },
+    { id: 'teaspoon', label: 'Teaspoon', icon: CircleSmall },
+    { id: 'spoon', label: 'Spoon', icon: Utensils },
+    { id: 'cup', label: 'Cup', icon: Coffee },
+    { id: 'bowl', label: 'Bowl', icon: IceCreamBowl },
+    { id: 'plate', label: 'Plate', icon: Disc },
 ];
 
 // --- Components ---
@@ -173,7 +173,7 @@ function PortionModal({ isOpen, onClose, onSelect }) {
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
-                <h3>Seleziona Porzione</h3>
+                <h3>Select Portion</h3>
                 <div className="portion-grid">
                     {PORTIONS.map(p => (
                         <div key={p.id} className="portion-item" onClick={() => onSelect(p.id)}>
@@ -182,7 +182,7 @@ function PortionModal({ isOpen, onClose, onSelect }) {
                         </div>
                     ))}
                 </div>
-                <button className="btn-cancel" onClick={onClose}>Annulla</button>
+                <button className="btn-cancel" onClick={onClose}>Cancel</button>
             </div>
         </div>
     );
