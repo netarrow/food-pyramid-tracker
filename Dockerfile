@@ -27,5 +27,5 @@ COPY server ./server
 COPY --from=server-deps /app/node_modules ./node_modules
 COPY --from=client-builder /app/dist ./dist
 
-EXPOSE 3001
+EXPOSE 80
 CMD ["node", "server/index.js"]
