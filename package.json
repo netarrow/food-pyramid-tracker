@@ -5,8 +5,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "start": "NODE_ENV=production node server/index.js",
-        "dev": "NODE_ENV=development node server/index.js",
+        "start": "PORT=${PORT:-80} NODE_ENV=production node server/index.js",
+        "dev": "PORT=${PORT:-3001} NODE_ENV=development node server/index.js",
         "start:server": "npm run dev",
         "start:client": "vite",
         "lint": "eslint .",
