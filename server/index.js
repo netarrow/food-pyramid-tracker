@@ -1,3 +1,4 @@
+/* global process */
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -10,7 +11,7 @@ const clientRoot = path.join(__dirname, '..');
 const distPath = path.join(clientRoot, 'dist');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 80;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -49,7 +50,7 @@ async function startServer() {
 
   if (isProduction) {
     // --- PRODUCTION: Serve Static Files ---
-    console.log('Running in PRODUCTION mode');
+    console.log(`Running in PRODUCTION mode. Serving static files from ${distPath}`);
     app.use(express.static(distPath));
 
     // Catch-all for SPA (Express 5 requires named wildcard)
@@ -58,7 +59,7 @@ async function startServer() {
     });
   } else {
     // --- DEVELOPMENT: Use Vite Middleware ---
-    console.log('Running in DEVELOPMENT mode');
+    console.log('Running in DEVELOPMENT mode with Vite middleware');
     const { createServer: createViteServer } = await import('vite');
     
     // Create Vite server in middleware mode and configure the app type as 'spa'
