@@ -28,6 +28,16 @@ async function startServer() {
     res.json(logs);
   });
 
+
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({
+      status: 'ok',
+      service: 'food-pyramid-tracker',
+      environment: process.env.NODE_ENV || 'development',
+      timestamp: new Date().toISOString()
+    });
+  });
+
   app.post('/api/logs', (req, res) => {
     const { date, place, foodType } = req.body;
     if (!date || !place || !foodType) {
