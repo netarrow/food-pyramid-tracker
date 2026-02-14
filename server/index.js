@@ -5,13 +5,14 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const clientRoot = path.join(__dirname, '..');
-const distPath = path.join(clientRoot, 'dist');
-
 const app = express();
 const PORT = Number(process.env.PORT) || 80;
+const isProduction = process.env.NODE_ENV === 'production';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientRoot = path.resolve(__dirname, '..');
+const distPath = path.resolve(__dirname, '../dist');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -19,16 +20,11 @@ app.use(bodyParser.json());
 // In-memory stick data store
 let logs = [];
 
-// --- Environment Setup ---
-const isProduction = process.env.NODE_ENV === 'production';
-
-async function startServer() {
+async function setupServer() {
   // API Routes (Always active)
   app.get('/api/logs', (req, res) => {
     res.json(logs);
   });
-
-
   app.get('/api/health', (req, res) => {
     res.status(200).json({
       status: 'ok',
@@ -37,7 +33,6 @@ async function startServer() {
       timestamp: new Date().toISOString()
     });
   });
-
   app.post('/api/logs', (req, res) => {
     const { date, place, foodType } = req.body;
     if (!date || !place || !foodType) {
@@ -59,34 +54,31 @@ async function startServer() {
 
 
   if (isProduction) {
-    // --- PRODUCTION: Serve Static Files ---
-    console.log(`Running in PRODUCTION mode. Serving static files from ${distPath}`);
+    // Production: serve static files from /dist
+    console.log(`Running in PRODUCTION mode (serving static files from ${distPath})`);
     app.use(express.static(distPath));
 
-    // Catch-all for SPA (Express 5 requires named wildcard)
-    app.get('/{*splat}', (req, res) => {
+    // SPA fallback
+    app.get(/.*/, (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   } else {
-    // --- DEVELOPMENT: Use Vite Middleware ---
-    console.log('Running in DEVELOPMENT mode with Vite middleware');
+    // Development: use Vite middleware
+    console.log('Running in DEVELOPMENT mode (using Vite middleware)');
     const { createServer: createViteServer } = await import('vite');
-    
-    // Create Vite server in middleware mode and configure the app type as 'spa'
+
     const vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: 'spa', 
+      appType: 'spa',
       root: clientRoot
     });
 
-    // Use vite's connect instance as middleware
-    // If you use your own express router (express.Router()), you should use router.use
     app.use(vite.middlewares);
   }
 
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server listening at http://localhost:${PORT}`);
   });
 }
 
-startServer();
+setupServer();
