@@ -125,7 +125,7 @@ function MealSlot({ id, title, items, onRemove }) {
     });
 
     return (
-        <div ref={setNodeRef} className={`meal-slot ${isOver ? 'highlight' : ''}`}>
+        <div id={id} ref={setNodeRef} className={`meal-slot ${isOver ? 'highlight' : ''}`}>
             <h3>{title}</h3>
             <div className="meal-items">
                 {items.length === 0 && <span className="placeholder">Drop food here</span>}
@@ -187,6 +187,67 @@ function PortionModal({ isOpen, onClose, onSelect }) {
         </div>
     );
 }
+
+// --- Custom Modifier ---
+const snapToFirstMealOnMobile = ({ transform, activeNodeRect, windowRect }) => {
+    // Check if mobile (width < 768px matching CSS breakpoint)
+    // We can also check window.innerWidth directly if windowRect isn't enough context
+    if (window.innerWidth >= 768) {
+        return transform;
+    }
+
+    // Try to find the first meal slot ("Breakfast")
+    const firstMeal = document.getElementById('Breakfast');
+    if (!firstMeal || !activeNodeRect) {
+        return transform;
+    }
+
+    const targetRect = firstMeal.getBoundingClientRect();
+
+    // Calculate the difference between the active node's original position 
+    // and the target position.
+    // transform.x/y is the current drag offset (how much user moved from start)
+    // We want to add an initial offset that places the item over the target.
+
+    // However, dnd-kit modifiers usually transform the *current* drag position.
+    // If we want the item to *start* at the target, we need to conceptually shift
+    // the coordinate system.
+
+    // BUT: The user's finger is still at the START position.
+    // If we move the item to the target, and the target is far away,
+    // the item will look detached from the finger.
+    // The requirement is "l'icona non dovrebbe esere inizialmente in alto a sx... ma essere già nel primo slot".
+    // This implies visually snapping it there.
+
+    // Let's implement a 'snap center to center' logic relative to the *initial* position.
+
+    // transform has { x, y } which is the delta of drag.
+
+    // We want the visual position to be: TargetCenter + DragDelta
+    // Current visual position is: InitialCenter + DragDelta
+    // So we need to add (TargetCenter - InitialCenter) to the transform.
+
+    // activeNodeRect is the initial rect of the Draggable.
+
+    const currentCenter = {
+        x: activeNodeRect.left + activeNodeRect.width / 2,
+        y: activeNodeRect.top + activeNodeRect.height / 2,
+    };
+
+    const targetCenter = {
+        x: targetRect.left + targetRect.width / 2,
+        y: targetRect.top + targetRect.height / 2,
+    };
+
+    const offsetX = targetCenter.x - currentCenter.x;
+    const offsetY = targetCenter.y - currentCenter.y;
+
+    return {
+        ...transform,
+        x: transform.x + offsetX,
+        y: transform.y + offsetY,
+    };
+};
 
 // --- Main Tracker ---
 
@@ -397,7 +458,7 @@ const Tracker = () => {
                     </div>
                 </div>
 
-                <DragOverlay>
+                <DragOverlay modifiers={[snapToFirstMealOnMobile]}>
                     {activeDragId ? <DragItemOverlay id={activeDragId} /> : null}
                 </DragOverlay>
             </DndContext>
