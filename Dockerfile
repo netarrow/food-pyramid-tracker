@@ -18,9 +18,9 @@ RUN npm run build
 FROM node:20-slim AS runner
 WORKDIR /usr/src/app
 
-# Install only runtime dependencies
+# Install all dependencies
 COPY package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+RUN npm ci && npm cache clean --force
 
 # App runtime configuration
 ENV PORT=80
