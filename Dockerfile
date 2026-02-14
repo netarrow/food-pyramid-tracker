@@ -1,32 +1,34 @@
-FROM node:20-alpine AS client-builder
-WORKDIR /app
+FROM node:20-slim AS deps
+WORKDIR /usr/src/app
 
+# Copy package files first for better layer caching
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
-COPY index.html ./index.html
-COPY vite.config.js ./vite.config.js
-COPY public ./public
-COPY src ./src
+FROM node:20-slim AS builder
+WORKDIR /usr/src/app
+
+# Reuse dependencies and copy source
+COPY --from=deps /usr/src/app/node_modules ./node_modules
+COPY . .
+
+# Build Vite frontend
 RUN npm run build
 
+FROM node:20-slim AS runner
+WORKDIR /usr/src/app
 
-FROM node:20-alpine AS server-deps
-WORKDIR /app
-
+# Install only runtime dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm ci --omit=dev && npm cache clean --force
 
-
-FROM node:20-alpine
+# App runtime configuration
 ENV PORT=80
 ENV NODE_ENV=production
-WORKDIR /app
 
-COPY package*.json ./
+# Copy backend and built frontend
 COPY server ./server
-COPY --from=server-deps /app/node_modules ./node_modules
-COPY --from=client-builder /app/dist ./dist
+COPY --from=builder /usr/src/app/dist ./dist
 
 EXPOSE 80
 CMD ["node", "server/index.js"]
